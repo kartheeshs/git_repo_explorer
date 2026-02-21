@@ -6,15 +6,23 @@ import RepoList from "./components/RepoList";
 import Pagination from "./components/reusable/Pagination";
 import "./style.css";
 
+interface SearchParams {
+  query: string;
+  sort: string;
+}
+
 function App() {
   const [query, setQuery] = useState("");
+  const [sort, setSort] = useState("");
+  const [searchParams, setSearchParams] = useState<SearchParams>({
+    query: "",
+    sort: "",
+  });
+
   const [repos, setRepos] = useState<Repository[]>([]);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
-  const [sort, setSort] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const [trigger, setTrigger] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -23,8 +31,10 @@ function App() {
       try {
         setLoading(true);
 
-        const searchQuery = query.trim() || "stars:>100";
-        const searchSort = sort || "stars";
+        const searchQuery =
+          searchParams.query.trim() || "stars:>100";
+        const searchSort =
+          searchParams.sort || "stars";
 
         const data = await searchRepositories(
           searchQuery,
@@ -36,9 +46,9 @@ function App() {
 
         setRepos(data.items);
         setTotal(data.total_count);
-      } catch (error: any) {
-        if (error.name !== "AbortError") {
-          console.error(error);
+      } catch (error: unknown) {
+        if (error instanceof Error && error.name !== "AbortError") {
+          console.error(error.message);
         }
       } finally {
         setLoading(false);
@@ -48,20 +58,26 @@ function App() {
     fetchData();
 
     return () => controller.abort();
-  }, [trigger, page]);
+  }, [searchParams, page]);
 
   const totalPages = Math.ceil(total / 12);
 
   const handleSearch = () => {
     setPage(1);
-    setTrigger((prev) => prev + 1);
+    setSearchParams({
+      query,
+      sort,
+    });
   };
 
   const handleReset = () => {
     setQuery("");
     setSort("");
     setPage(1);
-    setTrigger((prev) => prev + 1);
+    setSearchParams({
+      query: "",
+      sort: "",
+    });
   };
 
   return (
