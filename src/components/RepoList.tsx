@@ -5,15 +5,11 @@ import Loader from "./reusable/Loader";
 interface Props {
   loading: boolean;
   repos: Repository[];
-  favorites: Repository[];
-  toggleFavorite: (repo: Repository) => void;
 }
 
 export default function RepoList({
   loading,
   repos,
-  favorites,
-  toggleFavorite,
 }: Props) {
   if (loading) {
     return <Loader />;
@@ -29,8 +25,6 @@ export default function RepoList({
         <RepoCard
           key={repo.id}
           repo={repo}
-          toggleFavorite={toggleFavorite}
-          isFavorite={favorites.some((f) => f.id === repo.id)}
         />
       ))}
     </div>

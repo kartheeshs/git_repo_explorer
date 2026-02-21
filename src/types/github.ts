@@ -14,6 +14,8 @@ export interface Repository {
   forks_count: number;
   language: string;
   owner: Owner;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface SearchResponse {

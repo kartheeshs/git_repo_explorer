@@ -1,16 +1,13 @@
 import type { Repository } from "../types/github";
-import { Star, GitFork, Code2, Heart } from "lucide-react";
+import { Star, GitFork, Code2 } from "lucide-react";
+import { getRelativeTime } from "../utils/date";
 
 interface Props {
   repo: Repository;
-  toggleFavorite: (repo: Repository) => void;
-  isFavorite: boolean;
 }
 
 export default function RepoCard({
-  repo,
-  toggleFavorite,
-  isFavorite,
+  repo
 }: Props) {
   return (
     <div className="repo-card">
@@ -21,7 +18,7 @@ export default function RepoCard({
             target="_blank"
             rel="noopener noreferrer"
           >
-            {repo.full_name}
+            {repo.name}
           </a>
         </h3>
 
@@ -40,20 +37,18 @@ export default function RepoCard({
             <GitFork size={14} /> {repo.forks_count}
           </span>
 
-          <span>
-            <Code2 size={14} /> {repo.language || "不明"}
-          </span>
+          {repo.language && 
+            <span>
+              <Code2 size={14} /> {repo.language}
+            </span>
+          }
         </div>
 
-        <button
-          className={`favorite-btn ${isFavorite ? "active" : ""}`}
-          onClick={() => toggleFavorite(repo)}
-        >
-          <Heart
-            size={14}
-            fill={isFavorite ? "currentColor" : "none"}
-          />
-        </button>
+        <div className="repo-actions">
+          <span className="repo-date">
+            {getRelativeTime(repo.updated_at)}
+          </span>
+        </div>
       </div>
     </div>
   );
