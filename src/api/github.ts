@@ -8,15 +8,16 @@ export async function searchRepositories(
   page: number,
   sort: string,
   order: string,
+  signal?: AbortSignal
 ): Promise<SearchResponse> {
-  const url = `${BASE_URL}/search/repositories?q=${query}&page=${page}&per_page=12&sort=${sort}&order=${order}`;
+  const url = `${BASE_URL}/search/repositories?q=${encodeURIComponent(query)}&page=${page}&per_page=12&sort=${sort}&order=${order}`;
 
   const headers: Record<string, string> = {};
   if (TOKEN) {
     headers.Authorization = `Bearer ${TOKEN}`;
   }
 
-  const response = await fetch(url, { headers });
+  const response = await fetch(url, { headers, signal });
 
   if (!response.ok) {
     throw new Error("API request failed");

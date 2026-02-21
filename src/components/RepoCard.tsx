@@ -9,18 +9,22 @@ interface Props {
 export default function RepoCard({
   repo
 }: Props) {
+  const handleClick = () => {
+    window.open(repo.html_url, "_blank", "noopener,noreferrer");
+  };
+
   return (
-    <div className="repo-card">
+    <div
+      className="repo-card"
+      role="link"
+      tabIndex={0}
+      onClick={handleClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") handleClick();
+      }}
+    >
       <div className="repo-content">
-        <h3 className="repo-title">
-          <a
-            href={repo.html_url}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {repo.name}
-          </a>
-        </h3>
+        <h3 className="repo-title">{repo.name}</h3>
 
         <p className="repo-description">
           {repo.description || "説明はありません。"}
